@@ -13,6 +13,7 @@ from types import SimpleNamespace
 import logging
 import json
 import sys
+from transformers import T5Model
 
 # Local imports
 from src.masker import Masker, RandomMasker, GradientMasker
@@ -189,8 +190,14 @@ def run_train_editor(predictor, dr, args):
     np.random.seed(args.train.seed)
     torch.backends.cudnn.deterministic = True
 
-    editor_tokenizer, editor_model = load_base_t5(
-            max_length=args.model.model_max_length)
+    model_name = 'unicamp-dl/ptt5-base-portuguese-vocab'
+
+    editor_tokenizer = T5Tokenizer.from_pretrained(model_name, truncation=True)
+
+    # PyTorch
+    t5_config = T5Config.from_pretrained(model_name, n_positions=args.model.model_max_length)
+    editor_model = T5ForConditionalGeneration.from_pretrained(model_name, config=t5_config)
+
     device = get_device()
     editor_model = editor_model.to(device)
 
