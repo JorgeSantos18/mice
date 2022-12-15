@@ -415,7 +415,7 @@ class GradientMasker(Masker):
             self, editable_seg, pred_idx, editor_toks, 
             labeled_instance=None, 
             predic_tok_start_idx=None, 
-            predic_tok_end_idx=None, 
+            predictor_tok_end_idx=None, 
             num_return_toks=None):
         """ Gets Editor tokens that correspond to Predictor toks 
         with highest gradient values (with respect to pred_idx).
@@ -506,15 +506,15 @@ class GradientMasker(Masker):
             grad_magnitudes = grad_signed.copy()
 
         # Include only gradient values for editable parts of the inp
-        if predic_tok_end_idx is not None:
+        if predictor_tok_end_idx is not None:
             if predic_tok_start_idx is not None:
                 grad_magnitudes = grad_magnitudes[
-                        predic_tok_start_idx:predic_tok_end_idx]
+                        predic_tok_start_idx:predictor_tok_end_idx]
                 grad_signed = grad_signed[
-                        predic_tok_start_idx:predic_tok_end_idx]
+                        predic_tok_start_idx:predictor_tok_end_idx]
             else:
-                grad_magnitudes = grad_magnitudes[:predic_tok_end_idx]
-                grad_signed = grad_signed[:predic_tok_end_idx]
+                grad_magnitudes = grad_magnitudes[:predictor_tok_end_idx]
+                grad_signed = grad_signed[:predictor_tok_end_idx]
         
         # Order Predictor tokens from largest to smallest gradient values 
         ordered_predic_tok_indices = np.argsort(grad_magnitudes)[::-1]
@@ -528,12 +528,12 @@ class GradientMasker(Masker):
                 ordered_word_indices_by_grad for item in sublist]
         
         # Sanity checks
-        if predic_tok_end_idx is not None:
+        if predictor_tok_end_idx is not None:
             if predic_tok_start_idx is not None:
                 assert(len(grad_magnitudes) == \
-                        predic_tok_end_idx - predic_tok_start_idx)
+                        predictor_tok_end_idx - predic_tok_start_idx)
             else:
-                assert(len(grad_magnitudes) == predic_tok_end_idx)
+                assert(len(grad_magnitudes) == predictor_tok_end_idx)
         elif max_length is not None and (len(grad_magnitudes)) >= max_length:
             assert(max_length == (len(grad_magnitudes)))
         else:

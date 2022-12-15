@@ -197,12 +197,12 @@ def format_multiple_choice_input(context, question, options, answer_idx):
         formatted_str += " choice" + str(option_idx) + ": " + option
     return formatted_str
 
-def load_predictor(task, predictor_folder="trained_predictors/"):
+def load_predictor(task, predictor_folder="trained_predictors/models/"):
     task_options = ["imdb", "race", "newsgroups"]
     if task not in task_options:
         raise NotImplementedError(f"Task {task} not implemented; \
                 must be one of {task_options}")
-    predictor_path = os.path.join(predictor_folder, task, "model/model.tar.gz")
+    predictor_path = os.path.join(predictor_folder, task, "model.tar.gz")
     if not os.path.exists(predictor_path):
         raise ValueError(f"Cannot find predictor path {predictor_path}")
     logger.info(f"Loading Predictor from: {predictor_path}")
